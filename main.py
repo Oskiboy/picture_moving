@@ -1,6 +1,7 @@
 import os
 import glob
 import time as t
+from shutil import copyfile
 
 mem_stick_path = "F:/DCIM/"
 
@@ -36,4 +37,4 @@ def main():
         work_dir = mem_stick_path + "/" + d
         os.chdir(work_dir)
         for p in glob.glob("*.jpg"):
-            os.rename(work_dir + "/" + p, picture_path + "/" + p)
+            copyfile(work_dir + "/" + p, picture_path + "/" + p)
