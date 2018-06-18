@@ -8,10 +8,10 @@ picture_path = "C:/Users/Gro/Pictures"
 
 def translateMonth(month_number):
     # Translates month number to a Norwegian month name
-    months = ["Januar", "Februar", "Mars", "April", "Mai"
+    months = ["Januar", "Februar", "Mars", "April", "Mai",
               "Juni", "Juli", "August", "September", "Oktober",
               "November", "Desember" ]
-    return months[month_number]
+    return months[month_number - 1]
  
 def getFolderName():
     # Creates the correct folder path
