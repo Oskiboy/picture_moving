@@ -2,6 +2,7 @@ import os
 import glob
 import time as t
 from shutil import copyfile
+import PictureMover as pm
 
 VERSION = (1, 1)    # Version number (MAJOR, MINOR)
 mem_stick_path = "F:/DCIM/"
