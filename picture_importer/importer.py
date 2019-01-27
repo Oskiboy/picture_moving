@@ -3,7 +3,7 @@ import glob
 import time as t
 from shutil import copyfile
 
-class PictureMover():
+class ImageImporter():
     mem_stick_path = "F:/DCIM/"
     picture_path = "C:/Users/Gro/Pictures"
     
@@ -40,6 +40,9 @@ class PictureMover():
         year = t.strftime("%Y")
         month = self.translateMonth(int(t.strftime("%m")))
         return "/" + year + "/" + month
+    
+    def getPaths(self):
+        print(self.mem_stick_path, self.picture_path)
 
     def run(self):
         if not os.path.exists(self.mem_stick_path):
@@ -70,3 +73,11 @@ class PictureMover():
                 copyfile(work_dir + "/" + p, self.picture_path + "/" + p)
 
         return 0
+
+def test():
+    print("This works")
+
+if __name__ == "__main__":
+    m = ImageImporter()
+    m.getPaths()
+    t.sleep(2)
