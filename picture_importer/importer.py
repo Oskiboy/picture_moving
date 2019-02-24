@@ -3,7 +3,7 @@ import glob
 import time as t
 from shutil import copyfile
 
-class ImageImporter():
+class ImageImporter(object):
     mem_stick_path = "F:/DCIM/"
     picture_path = "C:/Users/Gro/Pictures"
     
@@ -74,8 +74,6 @@ class ImageImporter():
 
         return 0
 
-def test():
-    print("This works")
 
 if __name__ == "__main__":
     m = ImageImporter()

@@ -1,14 +1,13 @@
-import os
-import glob
 import time as t
-from shutil import copyfile
-import picture_importer.importer as pim
+
+from picture_importer.importer import ImageImporter
+
 
 def main():
     print("Hello!")
     t.sleep(2)
     try:
-        imp = im.ImageImporter()
+        imp = ImageImporter()
         imp.getPaths()
         print(imp.run())
     except:
@@ -17,4 +16,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
