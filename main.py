@@ -59,7 +59,7 @@ def main():
     # First checks for the existence of the memory stick
     if not os.path.exists(mem_stick_path):
         print("Finner ikke minnepenn!")
-        print("Har du huska å koble den til?")
+        print("Har du huska å koble den til? Trykk enter for å avslutte.")
         input()
         exit()
     else:
@@ -90,5 +90,9 @@ def update():
 
 
 if __name__ == '__main__':
+    print("Oppdaterer:")
     update()
+    print()
+    
+    print("Kjører overføring:")
     main()
