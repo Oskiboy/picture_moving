@@ -2,6 +2,7 @@ import os
 import glob
 import time as t
 from shutil import copyfile
+from subprocess import check_call as run
 
 mem_stick_path = "F:/DCIM/"
 picture_path = "C:/Users/Gro/Pictures"
@@ -53,4 +54,9 @@ def main():
             print("Kopierer bilde: ", p)
             copyfile(work_dir + "/" + p, picture_path + "/" + p)
 
-main()
+def update():
+    run(['git', 'pull'])
+
+if __name__ == '__main__':
+    update
+    main()
