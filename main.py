@@ -58,5 +58,5 @@ def update():
     run(['git', 'pull'])
 
 if __name__ == '__main__':
-    update
+    update()
     main()
