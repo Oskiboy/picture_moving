@@ -3,6 +3,7 @@ import glob
 import time as t
 from shutil import copyfile
 from subprocess import check_call as run
+import subprocess
 
 mem_stick_path = "F:/DCIM/"
 picture_path = "C:/Users/Gro/Pictures"
@@ -26,6 +27,30 @@ def createFolders(path_to_folder):
         print("Lager nye mapper...")
         os.makedirs(path_to_folder)
 
+def resolve_path(executable):
+    if os.path.sep in executable:
+        raise ValueError("Invalid filename: %s" % executable)
+
+    path = os.environ.get("PATH", "").split(os.pathsep)
+    # PATHEXT tells us which extensions an executable may have
+    path_exts = os.environ.get("PATHEXT", ".exe;.bat;.cmd").split(";")
+    has_ext = os.path.splitext(executable)[1] in path_exts
+    if not has_ext:
+        exts = path_exts
+    else:
+        # Don't try to append any extensions
+        exts = [""]
+
+    for d in path:
+        try:
+            for ext in exts:
+                exepath = os.path.join(d, executable + ext)
+                if os.access(exepath, os.X_OK):
+                    return exepath
+        except OSError:
+            pass
+
+    return None
 
 def main():
     global mem_stick_path
@@ -35,6 +60,7 @@ def main():
     if not os.path.exists(mem_stick_path):
         print("Finner ikke minnepenn!")
         print("Har du huska å koble den til?")
+        input()
         exit()
     else:
         os.chdir(mem_stick_path)
@@ -55,7 +81,13 @@ def main():
             copyfile(work_dir + "/" + p, picture_path + "/" + p)
 
 def update():
-    run(['git', 'pull'])
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    os.chdir(dname)
+    git = resolve_path("git")
+    proc = subprocess.Popen('{0} pull'.format(git))
+    print("Update result:", proc.communicate())
+
 
 if __name__ == '__main__':
     update()
