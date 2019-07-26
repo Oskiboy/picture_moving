@@ -1,12 +1,13 @@
 import os
 import glob
 import time as t
-from shutil import copyfile
-from subprocess import check_call as run
+import shutil
 import subprocess
+from shutil import copyfile
+
 
 mem_stick_path = "F:/DCIM/"
-picture_path = "C:/Users/Gro/Pictures"
+picture_path = "D:/Users/Gro/Pictures"
 
 def translateMonth(month_number):
     # Translates month number to a Norwegian month name
@@ -19,7 +20,7 @@ def getFolderName():
     # Creates the correct folder path
     year = t.strftime("%Y")
     month = translateMonth(int(t.strftime("%m")))
-    return "/" + year + "/" + month
+    return os.path.join(year, month)
 
 def createFolders(path_to_folder):
     # Creates folder paths that are needed.
@@ -27,30 +28,30 @@ def createFolders(path_to_folder):
         print("Lager nye mapper...")
         os.makedirs(path_to_folder)
 
-def resolve_path(executable):
-    if os.path.sep in executable:
-        raise ValueError("Invalid filename: %s" % executable)
+def copyFiles(source, dest):
+    mem_stick_folders = glob.glob(
+        os.path.join(source, "*")
+    )
+    for d in mem_stick_folders:
+        work_dir = os.path.join(source, d)
+        print("Jobber i mappe:", work_dir)
 
-    path = os.environ.get("PATH", "").split(os.pathsep)
-    # PATHEXT tells us which extensions an executable may have
-    path_exts = os.environ.get("PATHEXT", ".exe;.bat;.cmd").split(";")
-    has_ext = os.path.splitext(executable)[1] in path_exts
-    if not has_ext:
-        exts = path_exts
-    else:
-        # Don't try to append any extensions
-        exts = [""]
+        print("\nKopierer bilder...")
+        for p in glob.glob(os.path.join(work_dir,"*.jpg")):
+            print("Kopierer bilde: ", p)
+            copyfile(
+                p,
+                os.path.join(dest, os.path.basename(p))
+            )
 
-    for d in path:
-        try:
-            for ext in exts:
-                exepath = os.path.join(d, executable + ext)
-                if os.access(exepath, os.X_OK):
-                    return exepath
-        except OSError:
-            pass
+        print("\nKopierer filmer...")
+        for m in glob.glob(os.path.join(work_dir, '*.avi')):
+            print("Kopierer film: ", m)
+            copyfile(
+                m,
+                os.path.join(dest, os.path.basename(m))
+            )
 
-    return None
 
 def main():
     global mem_stick_path
@@ -62,31 +63,26 @@ def main():
         print("Har du huska å koble den til? Trykk enter for å avslutte.")
         input()
         exit()
-    else:
-        os.chdir(mem_stick_path)
-    
+
     # Creates a new path for pictures and then creates the correct folders.
-    picture_path += getFolderName()
+    picture_path = os.path.join(picture_path, getFolderName())
     createFolders(picture_path)
     
     # Retrieves a list of all folders in the memory stick.
-    mem_stick_folders = glob.glob("*")
-    for d in mem_stick_folders:
-        work_dir = mem_stick_path + "/" + d
-        os.chdir(work_dir)
-        print("Jobber i mappe:", work_dir)
+    copyFiles(mem_stick_path, picture_path)
 
-        for p in glob.glob("*.jpg"):
-            print("Kopierer bilde: ", p)
-            copyfile(work_dir + "/" + p, picture_path + "/" + p)
-
+    print("\nOverføring var vellyket!")
+    
 def update():
+    """A crude way to update the local git repo."""
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
-    git = resolve_path("git")
-    proc = subprocess.Popen('{0} pull'.format(git))
-    print("Update result:", proc.communicate())
+
+    git = shutil.which('git')
+
+    proc = subprocess.run([git, 'pull'], stdout=subprocess.PIPE)
+    print("Update result:", proc.stdout)
 
 
 if __name__ == '__main__':
