@@ -80,7 +80,7 @@ def update():
     os.chdir(dname)
 
     git = shutil.which('git')
-
+    proc = subprocess.run([git, 'fetch'], stdout=subprocess.PIPE)
     proc = subprocess.run([git, 'pull'], stdout=subprocess.PIPE)
     print("Update result:", proc.stdout)
 
